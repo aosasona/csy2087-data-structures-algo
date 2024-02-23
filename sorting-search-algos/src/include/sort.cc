@@ -15,3 +15,25 @@ std::vector<int> bubble_sort(std::vector<int> arr) {
 
   return arr;
 }
+
+std::vector<int> selection_sort(std::vector<int> arr) {
+  int i, j;
+  int len = arr.size();
+
+  for (i = 0; i < len - 1; i++) {
+    int min_value = arr[i];
+    int min_idx = i;
+
+    for (j = i + 1; j < len; j++) {
+      if (arr[j] < min_value) {
+        min_value = arr[j];
+        min_idx = j;
+      }
+    }
+
+    arr[min_idx] = arr[i];
+    arr[i] = min_value;
+  }
+
+  return arr;
+}

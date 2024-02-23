@@ -11,6 +11,7 @@ struct Test {
 };
 
 void task_one();
+void task_two();
 
 int main(int argc, char **arg_list) {
   if (argc <= 1) {
@@ -22,6 +23,9 @@ int main(int argc, char **arg_list) {
   switch (task_number) {
     case 1:
       task_one();
+      break;
+    case 2:
+      task_two();
       break;
     default:
       std::printf("Unknown task number: %d", task_number);
@@ -53,4 +57,56 @@ void task_one() {
     auto sorted_list = bubble_sort(v.list);
     assert(compare(sorted_list, v.expected));
   }
+
+  std::cout << "All assertions passed!";
 }
+
+void task_two() {
+  std::cout << "Executing task two\n";
+  int a1[] = {5, 7, 2, 8, 9, 1};
+  int r1[] = {1, 2, 5, 7, 8, 9};
+
+  int a2[] = {8, 29, 19, 7, 45, 18};
+  int r2[] = {7, 8, 18, 19, 29, 45};
+
+  int a3[] = {123, 11, 2, 50, 55, 24, 34};
+  int r3[] = {2, 11, 24, 34, 50, 55, 123};
+
+  Test tests[] = {
+      {.list = to_vector(a1, 6), .expected = to_vector(r1, 6)},
+      {.list = to_vector(a2, 6), .expected = to_vector(r2, 6)},
+      {.list = to_vector(a3, 7), .expected = to_vector(r3, 7)},
+  };
+
+  for (auto &v : tests) {
+    auto sorted_list = selection_sort(v.list);
+    assert(compare(sorted_list, v.expected));
+  }
+
+  std::cout << "All assertions passed!";
+}
+
+// void task_three() {
+//   std::cout << "Executing task three\n";
+//   int a1[] = {};
+//   int r1[] = {};
+//
+//   int a2[] = {};
+//   int r2[] = {};
+//
+//   int a3[] = {123, 11, 2, 50, 55, 24, 34};
+//   int r3[] = {2, 11, 24, 34, 50, 55, 123};
+//
+//   Test tests[] = {
+//       {.list = to_vector(a1, 6), .expected = to_vector(r1, 6)},
+//       {.list = to_vector(a2, 6), .expected = to_vector(r2, 6)},
+//       {.list = to_vector(a3, 7), .expected = to_vector(r3, 7)},
+//   };
+//
+//   for (auto &v : tests) {
+//     auto sorted_list = bubble_sort(v.list);
+//     assert(compare(sorted_list, v.expected));
+//   }
+//
+//   std::cout << "All assertions passed!";
+// }
