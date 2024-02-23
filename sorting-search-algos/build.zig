@@ -46,6 +46,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
 
+    exe.addIncludePath(.{ .path = "src/include" });
     exe.linkLibCpp();
 
     exe.addCSourceFiles(sources.items, &.{
@@ -57,7 +58,7 @@ pub fn build(b: *std.Build) !void {
         "-Wno-unused-function",
         "-Wno-unused-but-set-variable",
         "-Wno-missing-field-initializers",
-        "--std=c++17",
+        "-std=c++17",
     });
 
     b.installArtifact(exe);
