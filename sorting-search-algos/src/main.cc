@@ -104,7 +104,7 @@ void task_two() {
 //   };
 //
 //   for (auto &v : tests) {
-//     auto sorted_list = bubble_sort(v.list);
+//     auto sorted_list = insertion_sort(v.list);
 //     assert(compare(sorted_list, v.expected));
 //   }
 //
