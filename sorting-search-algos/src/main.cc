@@ -10,25 +10,36 @@ struct Test {
   std::vector<int> expected;
 };
 
+#define SUCCESS(msg) std::printf("\x1b[92m[SUCCESS] %s \x1b[0m\n", msg);
+#define PRINT_TASK(tno) \
+  std::printf("\x1b[94m> Executing task %d \x1b[0m\n", tno);
+
 void task_one();
 void task_two();
+void task_three();
 
-int main(int argc, char **arg_list) {
+int main(int argc, char *arg_list[]) {
   if (argc <= 1) {
     std::printf("Usage: %s <task-number>\n", arg_list[0]);
     return 1;
   }
 
   int task_number = std::atoi(arg_list[1]);
+  int fallthrough = task_number == 0 ? 1 : 0;
+
   switch (task_number) {
+    case 0:
     case 1:
       task_one();
-      break;
+      if (!fallthrough) break;
     case 2:
       task_two();
+      if (!fallthrough) break;
+    case 3:
+      task_three();
       break;
     default:
-      std::printf("Unknown task number: %d", task_number);
+      std::printf("\x1b[91mUnknown task number: %d\x1b[0m\n", task_number);
       return 1;
   }
 
@@ -36,7 +47,7 @@ int main(int argc, char **arg_list) {
 }
 
 void task_one() {
-  std::cout << "Executing task one\n";
+  PRINT_TASK(1);
 
   int arr1[] = {7, 2, 3, 8, 9, 1};
   int r1[] = {1, 2, 3, 7, 8, 9};
@@ -58,11 +69,12 @@ void task_one() {
     assert(compare(sorted_list, v.expected));
   }
 
-  std::cout << "All assertions passed!";
+  SUCCESS("Successfully ran bubble sort test");
 }
 
 void task_two() {
-  std::cout << "Executing task two\n";
+  PRINT_TASK(2);
+
   int a1[] = {5, 7, 2, 8, 9, 1};
   int r1[] = {1, 2, 5, 7, 8, 9};
 
@@ -83,30 +95,31 @@ void task_two() {
     assert(compare(sorted_list, v.expected));
   }
 
-  std::cout << "All assertions passed!";
+  SUCCESS("Successfully ran selection sort test");
 }
 
-// void task_three() {
-//   std::cout << "Executing task three\n";
-//   int a1[] = {};
-//   int r1[] = {};
-//
-//   int a2[] = {};
-//   int r2[] = {};
-//
-//   int a3[] = {123, 11, 2, 50, 55, 24, 34};
-//   int r3[] = {2, 11, 24, 34, 50, 55, 123};
-//
-//   Test tests[] = {
-//       {.list = to_vector(a1, 6), .expected = to_vector(r1, 6)},
-//       {.list = to_vector(a2, 6), .expected = to_vector(r2, 6)},
-//       {.list = to_vector(a3, 7), .expected = to_vector(r3, 7)},
-//   };
-//
-//   for (auto &v : tests) {
-//     auto sorted_list = insertion_sort(v.list);
-//     assert(compare(sorted_list, v.expected));
-//   }
-//
-//   std::cout << "All assertions passed!";
-// }
+void task_three() {
+  PRINT_TASK(3);
+
+  int a1[] = {7, 2, 4, 6, 3, 1};
+  int r1[] = {1, 2, 3, 4, 6, 7};
+
+  int a2[] = {25, 12, 37, 65, 24, 17};
+  int r2[] = {12, 17, 24, 25, 37, 65};
+
+  int a3[] = {101, 27, 33, 45, 27, 68, 55};
+  int r3[] = {27, 27, 33, 45, 55, 68, 101};
+
+  Test tests[] = {
+      {.list = to_vector(a1, 6), .expected = to_vector(r1, 6)},
+      {.list = to_vector(a2, 6), .expected = to_vector(r2, 6)},
+      {.list = to_vector(a3, 7), .expected = to_vector(r3, 7)},
+  };
+
+  for (auto &v : tests) {
+    auto sorted_list = insertion_sort(v.list);
+    assert(compare(sorted_list, v.expected));
+  }
+
+  SUCCESS("Successfully ran insertion sort test");
+}
