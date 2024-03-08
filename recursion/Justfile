@@ -1,0 +1,2 @@
+run:
+  watchexec -r -e cc,hh -w ./src/ -- zig build && ./zig-out/bin/recursion
