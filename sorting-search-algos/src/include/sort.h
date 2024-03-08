@@ -7,3 +7,5 @@ std::vector<int> bubble_sort(std::vector<int>);
 std::vector<int> selection_sort(std::vector<int>);
 
 std::vector<int> insertion_sort(std::vector<int>);
+
+std::vector<int> quick_sort(std::vector<int>&);

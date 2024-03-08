@@ -40,8 +40,6 @@ vector<int> remove_duplicates(vector<int> vec) {
   return result;
 }
 
-vector<int> to_vector(int arr[], int size) { return vector(arr, arr + size); }
-
 int compare(vector<int> a, vector<int> b) {
   if (a.size() != b.size()) {
     return false;
