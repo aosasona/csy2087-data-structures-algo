@@ -40,15 +40,7 @@ vector<int> remove_duplicates(vector<int> vec) {
   return result;
 }
 
-vector<int> to_vector(int vec[], int size) {
-  vector<int> output;
-
-  for (int i = 0; i < size; i++) {
-    output.push_back(vec[i]);
-  }
-
-  return output;
-}
+vector<int> to_vector(int arr[], int size) { return vector(arr, arr + size); }
 
 int compare(vector<int> a, vector<int> b) {
   if (a.size() != b.size()) {
@@ -65,12 +57,21 @@ int compare(vector<int> a, vector<int> b) {
 }
 
 void dump(vector<int> vec) {
-  std::string output;
+  std::string output = "[";
 
   for (int i = 0; i < vec.size(); i++) {
-    output.append(std::to_string(vec[i]));
-    output.append("\n");
+    output += std::to_string(vec[i]);
+    output += ", ";
   }
 
+  output.pop_back();
+  output.pop_back();
+
+  output += "]\n";
   std::cout << output;
+}
+
+void dump(std::string name, vector<int> vec) {
+  std::printf("%s: ", name.c_str());
+  dump(vec);
 }
