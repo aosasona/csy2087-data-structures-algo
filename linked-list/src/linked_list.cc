@@ -1,59 +1,60 @@
 #include "include/linked_list.hh"
 #include <cstdio>
 #include <iostream>
-#include <optional>
 #include <string>
 
-const uint BUF_LEN = 256;
+// this is way more than we would ever need in this case to be honest
+// don't do this at home kids
+const uint BUF_LEN = 8;
 
 LinkedList::LinkedList() { this->head = NULL; }
 
 LinkedList::~LinkedList() {
-  // Node *current_node = this->head;
-  // while (current_node != NULL) {
-  //   auto next = current_node->get_next();
-  //   if (next != NULL) {
-  //     current_node = next;
-  //     delete current_node;
-  //   }
-  // }
-  //
-  // this->head = NULL;
-}
+  Node *current_node = this->head;
+  while (current_node != NULL) {
 
-bool LinkedList::is_empty() const { return (this->head == NULL); }
+    // Take the next node and store the pointer so we can delete it later
+    Node *next_node = current_node->next;
+
+    // If we have no next node, set our head to NULL and break out
+    if (next_node == NULL) {
+      std::printf("> Freeing head node: ");
+      this->head->print();
+      this->head = NULL;
+      break;
+    }
+
+    std::printf("> Freeing node: ");
+    next_node->print();
+
+    // Point our next node in the head to the next of the one we are about to
+    // delete so that we retain the "chain"
+    this->head->next = next_node->next;
+
+    // It is safe to free the memory the memory belonging to our old "next node"
+    // now since we have removed it from the node
+    delete next_node;
+  }
+}
 
 void LinkedList::insert(int value) {
-  Node node = Node(value);
+  Node *node = new Node(value);
 
+  // If we have no nodes in the list yet, set the head node
   if (this->head == NULL) {
-    this->head = &node;
+    this->head = node;
     return;
   }
 
-  std::optional<Node *> last_node = this->get_last_node();
-  if (!last_node.has_value()) {
+  Node *last_node = this->get_last_node();
+  if (last_node == NULL) {
     return;
   }
 
-  // TODO: remove
-  std::printf("last_node before setting next: ");
-  last_node.value()->print();
-
-  //////
-  last_node.value()->set_next(node);
-  //////
-
-  // TODO: remove
-  std::printf("last_node: ");
-  last_node.value()->print();
-
-  // TODO: remove
-  std::printf("node: ");
-  node.print();
+  last_node->next = node;
 }
 
-std::optional<Node *> LinkedList::get_last_node() {
+Node *LinkedList::get_last_node() {
   // we don't need to check if the head is empty here because we will break out
   // in the first iteration anyway when our current_node tests positive to the
   // null check in the loop
@@ -62,27 +63,29 @@ std::optional<Node *> LinkedList::get_last_node() {
   Node *previous_node = NULL;      // the last valid node we visited
   while (current_node != NULL) {
     previous_node = current_node;
-    current_node = current_node->get_next();
+    current_node = current_node->next;
   }
 
-  return previous_node == NULL ? std::nullopt
-                               : std::optional<Node *>(previous_node);
+  return previous_node;
 }
 
-std::optional<const Node *> LinkedList::get(int value) const {
+// Traverse the list until we find the first match and return it
+// It is being returned as a const pointer because we don't want the user to
+// modify the content of the address
+const Node *LinkedList::get(int value) {
   const Node *current_node = this->head;
   const Node *node = NULL;
 
   while (current_node != NULL) {
-    if (current_node->value() == value) {
+    if (current_node->data == value) {
       node = current_node;
       break;
     }
 
-    current_node = current_node->get_next();
+    current_node = current_node->next;
   }
 
-  return node == NULL ? std::nullopt : std::optional<const Node *>(node);
+  return node;
 }
 
 void LinkedList::remove(int value) {
@@ -90,47 +93,51 @@ void LinkedList::remove(int value) {
   Node *target_node = NULL;
 
   while (current_node != NULL) {
-    if (current_node->value() == value) {
+    if (current_node->data == value) {
       target_node = current_node;
       break;
     }
 
-    current_node = current_node->get_next();
+    current_node = current_node->next;
   }
 
   if (target_node == NULL) {
-    throw std::invalid_argument("value is not present in the list!");
+    std::printf("[WARNING] value `%d` is not present in the list!\n", value);
+    return;
   }
 
-  current_node->set_next(*target_node->get_next());
+  // If the current node is also the head, trying to do it the normal way will
+  // cause an error since we don't have a node to the left
+  if (current_node == this->head) {
+    this->head = target_node->next;
+  } else {
+    current_node->next = target_node->next;
+  }
+
   delete target_node;
 }
 
 void LinkedList::print() {
   if (this->head == NULL) {
-    std::cout << "Empty list";
+    std::cout << "> Nodes -> []\n";
     return;
   }
 
   int n;
   char bf[BUF_LEN];
-  std::string list_str = "";
+  std::string list_str = "> List nodes\n\t";
 
   Node *current_node = this->head;
   while (current_node != NULL) {
-    n = std::snprintf(bf, BUF_LEN, "Node(%d)-->", current_node->value());
+    n = std::snprintf(bf, BUF_LEN, "Node(%d)-->", current_node->data);
     if (n >= 0 && n < BUF_LEN) {
       list_str += bf;
     }
 
-    current_node = current_node->get_next();
-    // std::cout << current_node->get_next() << std::endl;
-    break;
+    current_node = current_node->next;
   }
 
-  list_str.pop_back();
-  list_str.pop_back();
-  list_str.pop_back();
+  list_str += "(NULL)";
 
-  std::cout << list_str;
+  std::cout << list_str << std::endl;
 }
