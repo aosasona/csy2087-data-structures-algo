@@ -3,9 +3,7 @@
 #include <iostream>
 #include <string>
 
-// this is way more than we would ever need in this case to be honest
-// don't do this at home kids
-const uint BUF_LEN = 8;
+const uint BUF_LEN = 16;
 
 LinkedList::LinkedList() { this->head = NULL; }
 
@@ -140,4 +138,37 @@ void LinkedList::print() {
   list_str += "(NULL)";
 
   std::cout << list_str << std::endl;
+}
+
+// Warning: this "consumes" the list, you could ideally mark the node you want
+// the loop to stop at instead of removing the node completely
+void LinkedList::print_reverse() {
+  int n;
+  char bf[BUF_LEN];
+  std::string list_str = "> List nodes\n\t(NULL)<--";
+
+  while (this->head->next != NULL) {
+    Node *prev_node = NULL;
+    Node *tail = this->head;
+    Node *last_tail = NULL;
+
+    for (;;) {
+      if (tail->next == NULL) {
+        break;
+      }
+
+      prev_node = tail;
+      tail = tail->next;
+    }
+
+    n = std::snprintf(bf, BUF_LEN, "Node(%d)<--", tail->data);
+    if (n >= 0 && n < BUF_LEN) {
+      list_str += bf;
+    }
+
+    prev_node->next = NULL;
+    tail = this->head;
+  }
+
+  printf("%sHead(%d)\n", list_str.c_str(), this->head->data);
 }

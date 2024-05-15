@@ -8,6 +8,7 @@ public:
   const Node *get(int);
   void remove(int);
   void print();
+  void print_reverse();
 
 private:
   Node *head;

@@ -31,5 +31,7 @@ int main(int argc, char *arg_list[]) {
   // Expected: Node(3)->Node(99)->Node(6)->Node(200)-> Node(19)->(NULL)
   list.print();
 
+  list.print_reverse();
+
   return 0;
 }
